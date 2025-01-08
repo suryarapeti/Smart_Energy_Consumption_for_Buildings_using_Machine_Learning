@@ -58,7 +58,7 @@ else:
 
     if menu == "⚡ Energy Consumption Prediction":
         # Main app content for Energy Prediction
-        st.title("Energy Consumption Prediction & Insights")
+        st.title("Energy Consumption Prediction & Insights of a Building")
         st.markdown(
             "Predict and analyze energy consumption in smart buildings based on various environmental factors. "
             "Gain insights into energy patterns for improved energy management."
