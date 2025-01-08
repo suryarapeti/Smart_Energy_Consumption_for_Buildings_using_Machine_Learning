@@ -7,10 +7,10 @@ import seaborn as sns
 import plotly.express as px
 
 # Load the scaler and model
-with open(r"Model\scaler.pkl", 'rb') as file:
+with open(r"scaler.pkl", 'rb') as file:
     loaded_scaler = pickle.load(file)
 
-with open(r"Model\energy_predict.pkl", 'rb') as file:
+with open(r"energy_predict.pkl", 'rb') as file:
     loaded_model = pickle.load(file)
 
 # Sample user credentials
@@ -18,6 +18,8 @@ users = {
     "admin": "password123",
     "user1": "userpass",
 }
+
+st.set_page_config(page_title="Energy prediction")
 
 # Function to check login credentials
 def login(username, password):
@@ -50,10 +52,9 @@ else:
     st.sidebar.markdown("---")
     menu = st.sidebar.radio(
         "Select an option:",
-        ["⚡ Energy Consumption Prediction", "👁️ Visualize Data", "📚 Instructions", "📊 Data","📊 Key Performance Indicators","🔮 Forecasting"]
+        ["⚡ Energy Consumption Prediction", "👁️ Visualize Data", "📊 Data","📊 Key Performance Indicators"]
     )
     st.sidebar.markdown("---")
-    st.sidebar.markdown("Developed by Saipraneeth Sattu")
 
     if menu == "⚡ Energy Consumption Prediction":
         # Main app content for Energy Prediction
@@ -102,17 +103,15 @@ else:
         st.markdown("## 🔍 Energy Consumption Insights & Analysis")
 
         # Mock data for analysis (replace with real data if available)
-        data = pd.DataFrame({
-            "Date": pd.date_range(start="2023-01-01", periods=30),
-            "Energy Consumption (kWh)": np.random.uniform(50, 150, 30),
-            "Heat (J)": np.random.uniform(40, 140, 30),
-            "Humidity (%)": np.random.uniform(28, 100, 30),
-            "Temperature (°C)": np.random.uniform(15, 35, 30)
-        })
+        data = pd.read_csv("Malmi_office_building_hourly.csv")
+        data['Date'] = pd.to_datetime(data['Date'], format='%d/%m/%Y %H:%M')
+        data.set_index('Date',inplace=True)
 
         ### 📅 Energy Consumption Trend
+        daily_consumption = data['ElCons'].resample('D').sum()
+        daily_consumption = pd.DataFrame({'Date':daily_consumption.index, 'Elcons':daily_consumption.values})
         st.markdown("### 📅 Energy Consumption Trend")
-        fig = px.line(data, x="Date", y="Energy Consumption (kWh)", title="Daily Energy Consumption Trend")
+        fig = px.line(daily_consumption, x="Date", y="Elcons", title="Daily Energy Consumption Trend")
         fig.update_layout(
             xaxis_title='Date',
             yaxis_title='Energy Consumption (kWh)',
@@ -121,15 +120,9 @@ else:
         )
         st.plotly_chart(fig)
 
-        ### 🔥 Correlation Heatmap: Inputs vs Energy Consumption
-        st.markdown("### 🔥 Correlation Heatmap: Inputs vs Energy Consumption")
-        corr = data[['Energy Consumption (kWh)', 'Heat (J)', 'Humidity (%)', 'Temperature (°C)']].corr()
-        fig = px.imshow(corr, text_auto=True, color_continuous_scale="RdBu", title="Correlation Heatmap")
-        st.plotly_chart(fig)
-
         ### 📊 Distribution of Energy Consumption
         st.markdown("### 📊 Distribution of Energy Consumption")
-        fig = px.histogram(data, x="Energy Consumption (kWh)", nbins=15, title="Distribution of Energy Consumption")
+        fig = px.histogram(data, x="ElCons", nbins=15, title="Distribution of Energy Consumption")
         fig.update_layout(
             xaxis_title="Energy Consumption (kWh)",
             yaxis_title="Frequency",
@@ -139,8 +132,8 @@ else:
 
         ### 🌡️ Temperature vs Energy Consumption
         st.markdown("### 🌡️ Temperature vs Energy Consumption")
-        fig = px.scatter(data, x="Temperature (°C)", y="Energy Consumption (kWh)", title="Temperature vs Energy Consumption")
-        fig.update_traces(marker=dict(size=10, color='orange', line=dict(width=1, color='black')))
+        fig = px.scatter(data, x="Air temperature (degC)", y="ElCons", color='Air temperature (degC)',title="Temperature vs Energy Consumption")
+        fig.update_traces(marker=dict(size=10, line=dict(width=1, color='black')))
         fig.update_layout(
             xaxis_title="Temperature (°C)",
             yaxis_title="Energy Consumption (kWh)",
@@ -150,7 +143,7 @@ else:
 
         ### 💧 Humidity vs Energy Consumption
         st.markdown("### 💧 Humidity vs Energy Consumption")
-        fig = px.scatter(data, x="Humidity (%)", y="Energy Consumption (kWh)", title="Humidity vs Energy Consumption", color="Humidity (%)")
+        fig = px.scatter(data, x="Relative humidity (%)", y="ElCons", title="Humidity vs Energy Consumption", color="Relative humidity (%)")
         fig.update_layout(
             xaxis_title="Humidity (%)",
             yaxis_title="Energy Consumption (kWh)",
@@ -160,24 +153,20 @@ else:
 
         ### 📈 Trend Comparison: Energy Consumption vs Heat
         st.markdown("### 📈 Trend Comparison: Energy Consumption vs Heat")
-        fig = px.line(data, x="Date", y=["Energy Consumption (kWh)", "Heat (J)"], title="Trend Comparison: Energy Consumption vs Heat")
+        fig = px.line(data.reset_index(), x="Date", y=["ElCons", "Heat"], title="Trend Comparison: Energy Consumption vs Heat")
         fig.update_layout(
             xaxis_title="Date",
             yaxis_title="Values",
             template="plotly_dark"
         )
         st.plotly_chart(fig)
-
-    elif menu == "📚 Instructions":
-        st.markdown("### 🔎 Instructions for Using the App")
-        st.markdown(""" 
-        1. **Enter the Input Parameters**: Fill in the fields for Heat, Relative Humidity, Air Temperature, Wind Speed, Weekend, and Pressure.
-        2. **Click on '⚡ Predict Energy Consumption'**: After entering the data, click this button to get the energy consumption prediction.
-        3. **Click on '👁️ Visualize Data'**: This button will show the energy consumption trends, correlation heatmap, and weekend vs weekday comparisons.
-        4. **Click on '📚 Instructions'**: This button shows how to use the app.
-        5. **Click on '📊 Data'**: This button shows more information about the dataset used for this prediction tool.
-        """)
         
+        ### 🔥 Correlation Heatmap: Inputs vs Energy Consumption
+        st.markdown("### 🔥 Correlation Heatmap: Inputs vs Energy Consumption")
+        corr = data.corr(numeric_only=True)
+        fig = px.imshow(corr, text_auto=True, color_continuous_scale="RdBu", title="Correlation Heatmap")
+        st.plotly_chart(fig)
+
     elif menu == "📊 Data":
         st.markdown("### 📂 Dataset Information")
         st.markdown(""" 
@@ -188,22 +177,19 @@ else:
         """)
 
         # Load and display the dataset from a CSV file
-        df = pd.read_csv(r"D:\My Work\Infosys Spring Board AI Intern\Energy Consumption Prediction\Dataset\Malmi_office_building_hourly.csv")  # Replace with the correct path to your CSV file
+        data = pd.read_csv(r"Malmi_office_building_hourly.csv")
         st.markdown("### 📊 Dataset")
-        st.dataframe(df)
+        st.dataframe(data)
 
-    elif menu == "🔮 Forecasting":
-        st.markdown("## 🔮 Energy Consumption Forecasting")
-        st.write("Coming Soon! Stay Tuned.")
 
     elif menu == "📊 Key Performance Indicators":
-        df = pd.read_csv(r"D:\My Work\Infosys Spring Board AI Intern\Energy Consumption Prediction\Dataset\Final_dataset.csv")
+        data = pd.read_csv(r"Final_dataset_1.csv")
 
         st.markdown("### 📊 Key Performance Indicators")
         col1, col2, col3 = st.columns(3)
-        col1.metric("Average Energy Consumption", f"{df['ElCons'].mean():.2f} kWh")
-        col2.metric("Average Temperature", f"{df['Air temperature (degC)'].mean():.2f} °C")
-        col3.metric("Average Humidity", f"{df['Relative humidity (%)'].mean():.2f} %")
+        col1.metric("Average Energy Consumption", f"{data['ElCons'].mean():.2f} kWh")
+        col2.metric("Average Temperature", f"{data['Air temperature (degC)'].mean():.2f} °C")
+        col3.metric("Average Humidity", f"{data['Relative humidity (%)'].mean():.2f} %")
 
     # Footer
     st.markdown("---")
