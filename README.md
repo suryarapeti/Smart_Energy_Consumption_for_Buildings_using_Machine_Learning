@@ -26,19 +26,6 @@ This project leverages data preprocessing, feature engineering, and machine lear
 5. **Prediction**: Train the XGBoost model to predict energy consumption accurately.
 6. **Insights and Visualization**: Generate actionable insights and visualize trends in energy usage for better decision-making.
 
-## 🖥️ Setup Instructions:
-
-1. Clone the repository.
-2. Install the required dependencies using:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Prepare your dataset and ensure it is in the required format.
-4. Run the script to preprocess the data, train the model, and generate predictions:
-   ```bash
-   python energy_consumption.py
-   ```
-
 ## 🌟 Use Cases:
 
 - Predicting energy consumption for the future based on future weather forecasts.
