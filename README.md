@@ -2,6 +2,27 @@
 
 This project leverages data preprocessing, feature engineering, and machine learning to predict and analyze energy consumption in buildings, providing actionable insights for optimizing energy usage. It uses techniques like XGBoost for building a highly accurate predictive model.
 
+## 📊 Dataset Description
+
+The project uses a dataset containing hourly and daily electricity consumption data for buildings located in Helsinki, Finland. It also includes weather-related indicators collected from the nearest meteorological station, making it ideal for analyzing the relationship between weather conditions and energy usage.
+
+### Key Features:
+
+- **Electricity Consumption**:
+  - Hourly and daily energy usage data for buildings.
+- **Weather Data**:
+  - Indicators such as temperature, humidity, wind speed, and precipitation.
+- **Location**:
+  - Data specific to buildings in Helsinki, Finland.
+
+### Dataset Highlights:
+
+- Provides granular energy consumption data at both hourly and daily intervals.
+- Includes weather conditions to enable energy consumption predictions based on environmental factors.
+- Facilitates advanced feature engineering and predictive modeling by combining energy usage with weather data.
+
+This rich dataset enables the development of accurate models for forecasting energy consumption and optimizing energy efficiency based on weather patterns and building usage trends.
+
 ## 🛠️ Features:
 
 - Accurate prediction of energy consumption using machine learning.
