@@ -5,6 +5,8 @@ This project leverages data preprocessing, feature engineering, and machine lear
 ## 📊 Dataset Description
 
 The project uses a dataset containing hourly and daily electricity consumption data for buildings located in Helsinki, Finland. It also includes weather-related indicators collected from the nearest meteorological station, making it ideal for analyzing the relationship between weather conditions and energy usage.
+- The data for this study was collected from the Electricity Consumption and Weather Indicators Datasets, available on the AI4EU platform. You can access the dataset here:
+        👉 [AI4EU Platform - Electricity Consumption Dataset](https://www.ai4europe.eu/research/ai-catalog/electricity-consumption-and-weather-indicators-datasets)
 
 ### Key Features:
 
