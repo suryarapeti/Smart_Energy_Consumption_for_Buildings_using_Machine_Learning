@@ -7,10 +7,10 @@ import seaborn as sns
 import plotly.express as px
 
 # Load the scaler and model
-with open(r"D:\My Work\Infosys Spring Board AI Intern\Energy Consumption Prediction\Model\scaler.pkl", 'rb') as file:
+with open(r"Model\scaler.pkl", 'rb') as file:
     loaded_scaler = pickle.load(file)
 
-with open(r"D:\My Work\Infosys Spring Board AI Intern\Energy Consumption Prediction\Model\energy_predict.pkl", 'rb') as file:
+with open(r"Model\energy_predict.pkl", 'rb') as file:
     loaded_model = pickle.load(file)
 
 # Sample user credentials
